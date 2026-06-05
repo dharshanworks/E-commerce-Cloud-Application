@@ -46,11 +46,17 @@ stages {
     }
 }
 stage('OWASP Dependency Check') {
-    steps {
-        dependencyCheck additionalArguments: '--scan . --format XML --format HTML',
-        odcInstallation: 'DependencyCheck'
+    agent any
 
-        dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+    steps {
+        dependencyCheck(
+            additionalArguments: '--scan . --format XML --format HTML',
+            odcInstallation: 'DependencyCheck'
+        )
+
+        dependencyCheckPublisher(
+            pattern: '**/dependency-check-report.xml'
+        )
     }
 }
 

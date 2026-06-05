@@ -1,7 +1,7 @@
 pipeline {
 agent none
 
-```
+
 stages {
 
     stage('Backend Dependencies') {
@@ -41,11 +41,11 @@ stages {
 
                 withSonarQubeEnv('SonarQube') {
                     sh """
-                        ${scannerHome}/bin/sonar-scanner \
-                        -Dsonar.projectKey=cloudcart \
-                        -Dsonar.projectName=CloudCart \
-                        -Dsonar.sources=backend/src,frontend/src \
-                        -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/coverage/**
+                    ${scannerHome}/bin/sonar-scanner \
+                    -Dsonar.projectKey=cloudcart \
+                    -Dsonar.projectName=CloudCart \
+                    -Dsonar.sources=backend/src,frontend/src \
+                    -Dsonar.exclusions=**/node_modules/**,**/dist/**
                     """
                 }
             }
@@ -69,6 +69,5 @@ post {
         echo 'Pipeline Failed. Check Jenkins Console Output.'
     }
 }
-```
 
 }

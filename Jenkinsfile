@@ -59,6 +59,18 @@ stage('OWASP Dependency Check') {
         )
     }
 }
+stage('Trivy Filesystem Scan') {
+    agent any
+
+    steps {
+        sh '''
+        docker run --rm \
+        -v $WORKSPACE:/workspace \
+        aquasec/trivy:latest \
+        fs /workspace
+        '''
+    }
+}
 
     stage('Docker Version') {
         agent any

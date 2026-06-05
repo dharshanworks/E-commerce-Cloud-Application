@@ -45,6 +45,14 @@ stages {
         }
     }
 }
+stage('OWASP Dependency Check') {
+    steps {
+        dependencyCheck additionalArguments: '--scan . --format XML --format HTML',
+        odcInstallation: 'DependencyCheck'
+
+        dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+    }
+}
 
     stage('Docker Version') {
         agent any
@@ -52,6 +60,7 @@ stages {
             sh 'docker --version'
         }
     }
+
 }
 
 post {

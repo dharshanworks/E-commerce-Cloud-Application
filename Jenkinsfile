@@ -1,9 +1,14 @@
 pipeline {
-agent any
+agent none
 
 stages {
 
     stage('Backend Dependencies') {
+        agent {
+            docker {
+                image 'node:22-alpine'
+            }
+        }
         steps {
             dir('backend') {
                 sh 'npm install'
@@ -12,6 +17,11 @@ stages {
     }
 
     stage('Frontend Build') {
+        agent {
+            docker {
+                image 'node:22-alpine'
+            }
+        }
         steps {
             dir('frontend') {
                 sh 'npm install'
@@ -21,6 +31,7 @@ stages {
     }
 
     stage('Docker Version') {
+        agent any
         steps {
             sh 'docker --version'
         }

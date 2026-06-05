@@ -130,6 +130,30 @@ stages {
             '''
         }
     }
+    stage('Push Docker Images') {
+    agent any
+
+    steps {
+        withCredentials([
+            usernamePassword(
+                credentialsId: 'dockerhub-creds',
+                usernameVariable: 'DOCKER_USERNAME',
+                passwordVariable: 'DOCKER_PASSWORD'
+            )
+        ]) {
+
+            sh '''
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+            docker push ${DOCKER_USER}/${BACKEND_IMAGE}:${BUILD_NUMBER}
+            docker push ${DOCKER_USER}/${BACKEND_IMAGE}:latest
+
+            docker push ${DOCKER_USER}/${FRONTEND_IMAGE}:${BUILD_NUMBER}
+            docker push ${DOCKER_USER}/${FRONTEND_IMAGE}:latest
+            '''
+        }
+    }
+}
 
     stage('Docker Version') {
         agent any

@@ -41,6 +41,7 @@ stages {
 
     stage('SonarQube Analysis') {
         agent any
+
         steps {
             script {
                 def scannerHome = tool 'SonarScanner'
@@ -102,6 +103,30 @@ stages {
             -t ${DOCKER_USER}/${FRONTEND_IMAGE}:${BUILD_NUMBER} \
             -t ${DOCKER_USER}/${FRONTEND_IMAGE}:latest \
             ./frontend
+            '''
+        }
+    }
+
+    stage('Trivy Backend Image Scan') {
+        agent any
+
+        steps {
+            sh '''
+            trivy image \
+            --severity HIGH,CRITICAL \
+            ${DOCKER_USER}/${BACKEND_IMAGE}:latest
+            '''
+        }
+    }
+
+    stage('Trivy Frontend Image Scan') {
+        agent any
+
+        steps {
+            sh '''
+            trivy image \
+            --severity HIGH,CRITICAL \
+            ${DOCKER_USER}/${FRONTEND_IMAGE}:latest
             '''
         }
     }

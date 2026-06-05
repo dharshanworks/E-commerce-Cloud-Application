@@ -34,23 +34,17 @@ stages {
     }
 
     stage('SonarQube Analysis') {
-        agent any
-        steps {
-            script {
-                def scannerHome = tool 'SonarScanner'
+    agent any
+    steps {
+        script {
+            def scannerHome = tool 'SonarScanner'
 
-                withSonarQubeEnv('SonarQube') {
-                    sh """
-                    ${scannerHome}/bin/sonar-scanner \
-                    -Dsonar.projectKey=cloudcart \
-                    -Dsonar.projectName=CloudCart \
-                    -Dsonar.sources=backend/src,frontend/src \
-                    -Dsonar.exclusions=**/node_modules/**,**/dist/**
-                    """
-                }
+            withSonarQubeEnv('SonarQube') {
+                sh "${scannerHome}/bin/sonar-scanner"
             }
         }
     }
+}
 
     stage('Docker Version') {
         agent any

@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: backend
+  namespace: cloudcart
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: backend
+
+  template:
+    metadata:
+      labels:
+        app: backend
+
+    spec:
+      containers:
+        - name: backend
+          image: dharshanplans/cloudcart-backend:latest
+          imagePullPolicy: Always
+
+          ports:
+            - containerPort: 5000
+
+          env:
+            # Secrets
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: cloudcart-secret
+                  key: MONGO_URI
+
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: cloudcart-secret
+                  key: JWT_SECRET
+
+            # ConfigMap Values
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: cloudcart-config
+                  key: NODE_ENV
+
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: cloudcart-config
+                  key: PORT
+
+            - name: BACKEND_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: cloudcart-config
+                  key: BACKEND_URL
+
+            - name: FRONTEND_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: cloudcart-config
+                  key: FRONTEND_URL

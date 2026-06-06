@@ -32,3 +32,12 @@ docker-data/
 
 # Coverage
 coverage/
+
+k8s/secret.yaml
+
+.env
+backend/.env
+frontend/.env
+
+node_modules
+dist

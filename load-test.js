@@ -6,5 +6,5 @@ export const options = {
 };
 
 export default function () {
-  http.get('http://127.0.0.1:58693');
+  http.get('http://127.0.0.1:62184/');
 }

@@ -72,9 +72,6 @@ Developer
 * ArgoCD
 * Prometheus
 * Grafana
-* Metrics Server
-* Horizontal Pod Autoscaler (HPA)
-* k6 Load Testing
 
 ---
 

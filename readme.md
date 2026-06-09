@@ -81,7 +81,6 @@ Developer
 
 * User Authentication
 * Product Management
-* Shopping Cart
 * Order Management
 * Responsive UI
 

@@ -8,6 +8,7 @@ pipeline {
     environment {
         BACKEND_IMAGE = "cloudcart-backend"
         FRONTEND_IMAGE = "cloudcart-frontend"
+        SONAR_SCANNER = tool 'SonarScanner'
     }
 
     stages {
@@ -42,6 +43,28 @@ pipeline {
                 dir('frontend') {
                     sh 'npm install'
                     sh 'npm run build'
+                }
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh '''
+                        ${SONAR_SCANNER}/bin/sonar-scanner \
+                        -Dsonar.projectKey=cloudcart \
+                        -Dsonar.projectName=CloudCart \
+                        -Dsonar.sources=. \
+                        -Dsonar.sourceEncoding=UTF-8
+                    '''
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }

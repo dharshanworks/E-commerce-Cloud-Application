@@ -52,7 +52,7 @@ pipeline {
                 withSonarQubeEnv('SonarQube') {
                     sh '''
                         ${SONAR_SCANNER}/bin/sonar-scanner \
-                        -Dsonar.projectKey=cloudcart \
+                        -Dsonar.projectKey=CloudCart \
                         -Dsonar.projectName=CloudCart \
                         -Dsonar.sources=. \
                         -Dsonar.sourceEncoding=UTF-8

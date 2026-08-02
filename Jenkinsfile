@@ -9,6 +9,7 @@ pipeline {
         BACKEND_IMAGE = "cloudcart-backend"
         FRONTEND_IMAGE = "cloudcart-frontend"
         SONAR_SCANNER = tool 'SonarScanner'
+        DEPENDENCY_CHECK = tool 'DependencyCheck'
     }
 
     stages {
@@ -50,13 +51,13 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh '''
+                    sh """
                         ${SONAR_SCANNER}/bin/sonar-scanner \
                         -Dsonar.projectKey=CloudCart \
                         -Dsonar.projectName=CloudCart \
                         -Dsonar.sources=. \
                         -Dsonar.sourceEncoding=UTF-8
-                    '''
+                    """
                 }
             }
         }
@@ -66,6 +67,24 @@ pipeline {
                 timeout(time: 5, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
                 }
+            }
+        }
+
+        stage('OWASP Dependency Check') {
+            steps {
+                dependencyCheck(
+                    odcInstallation: 'DependencyCheck',
+                    additionalArguments: '''
+                        --scan .
+                        --format HTML
+                        --format XML
+                        --out dependency-check-report
+                    '''
+                )
+
+                dependencyCheckPublisher(
+                    pattern: 'dependency-check-report/dependency-check-report.xml'
+                )
             }
         }
 

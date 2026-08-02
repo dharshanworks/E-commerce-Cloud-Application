@@ -72,6 +72,9 @@ pipeline {
 
         stage('OWASP Dependency Check') {
             steps {
+
+                sh 'mkdir -p dependency-check-report'
+
                 dependencyCheck(
                     odcInstallation: 'DependencyCheck',
                     additionalArguments: '''
@@ -102,7 +105,6 @@ pipeline {
     }
 
     post {
-
         success {
             echo 'Pipeline completed successfully.'
         }

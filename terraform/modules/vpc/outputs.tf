@@ -23,3 +23,9 @@ output "internet_gateway_id" {
 output "nat_gateway_id" {
   value = aws_nat_gateway.this.id
 }
+
+output "vpc_cidr" {
+  description = "CIDR block of the VPC"
+
+  value = aws_vpc.this.cidr_block
+}

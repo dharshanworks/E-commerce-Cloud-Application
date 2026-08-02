@@ -1,0 +1,29 @@
+replicaCount: 2
+
+namespace: frontend
+
+app:
+  name: cloudcart-frontend
+
+image:
+  repository: 747848915242.dkr.ecr.ap-south-1.amazonaws.com/cloudcart-frontend
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+
+ingress:
+  className: alb
+  scheme: internet-facing
+  targetType: ip
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

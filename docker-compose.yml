@@ -1,0 +1,57 @@
+version: "3.9"
+
+services:
+
+  backend:
+    container_name: cloudcart-backend
+
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+
+    image: cloudcart-backend:latest
+
+    restart: unless-stopped
+
+    env_file:
+      - ./backend/.env
+
+    environment:
+      NODE_ENV: production
+
+    ports:
+      - "5000:5000"
+
+    networks:
+      - cloudcart-network
+
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  frontend:
+    container_name: cloudcart-frontend
+
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+
+    image: cloudcart-frontend:latest
+
+    restart: unless-stopped
+
+    depends_on:
+      - backend
+
+    ports:
+      - "80:80"
+
+    networks:
+      - cloudcart-network
+
+networks:
+  cloudcart-network:
+    driver: bridge

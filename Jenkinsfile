@@ -6,8 +6,16 @@ pipeline {
     }
 
     environment {
+
+        AWS_REGION = "ap-south-1"
+        AWS_ACCOUNT_ID = "747848915242"
+
         BACKEND_IMAGE = "cloudcart-backend"
         FRONTEND_IMAGE = "cloudcart-frontend"
+
+        BACKEND_ECR = "747848915242.dkr.ecr.ap-south-1.amazonaws.com/cloudcart-backend"
+        FRONTEND_ECR = "747848915242.dkr.ecr.ap-south-1.amazonaws.com/cloudcart-frontend"
+
         SONAR_SCANNER = tool 'SonarScanner'
         DEPENDENCY_CHECK = tool 'DependencyCheck'
     }
@@ -135,6 +143,57 @@ pipeline {
                 archiveArtifacts artifacts: 'trivy-report/*.txt', fingerprint: true
             }
         }
+
+        stage('Login to Amazon ECR') {
+            steps {
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-ecr'
+                ]]) {
+
+                    sh '''
+                        export AWS_PAGER=""
+
+                        aws ecr get-login-password \
+                        --region ${AWS_REGION} | docker login \
+                        --username AWS \
+                        --password-stdin \
+                        ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+                    '''
+                }
+            }
+        }
+
+        stage('Tag Backend Image') {
+            steps {
+                sh '''
+                    docker tag ${BACKEND_IMAGE}:latest \
+                    ${BACKEND_ECR}:latest
+                '''
+            }
+        }
+
+        stage('Tag Frontend Image') {
+            steps {
+                sh '''
+                    docker tag ${FRONTEND_IMAGE}:latest \
+                    ${FRONTEND_ECR}:latest
+                '''
+            }
+        }
+
+        stage('Push Backend Image') {
+            steps {
+                sh 'docker push ${BACKEND_ECR}:latest'
+            }
+        }
+
+        stage('Push Frontend Image') {
+            steps {
+                sh 'docker push ${FRONTEND_ECR}:latest'
+            }
+        }
+
     }
 
     post {

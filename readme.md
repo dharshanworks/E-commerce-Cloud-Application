@@ -135,12 +135,6 @@ Grafana visualizes:
 
 ---
 
-## Logging
-
-### ELK Stack
-
-#### Elasticsearch
-
 Stores application and cluster logs.
 
 #### Filebeat

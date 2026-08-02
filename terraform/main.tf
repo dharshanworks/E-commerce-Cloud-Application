@@ -15,3 +15,10 @@ module "vpc" {
   availability_zone_1 = var.availability_zone_1
   availability_zone_2 = var.availability_zone_2
 }
+module "iam" {
+
+  source = "./modules/iam"
+
+  project_name = var.project_name
+  environment  = var.environment
+}

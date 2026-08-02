@@ -25,6 +25,7 @@ pipeline {
             steps {
                 sh 'git --version'
                 sh 'docker --version'
+                sh 'trivy --version'
                 sh 'aws --version'
                 sh 'node --version'
                 sh 'npm --version'
@@ -102,9 +103,42 @@ pipeline {
                 sh 'docker build -t ${FRONTEND_IMAGE}:latest ./frontend'
             }
         }
+
+        stage('Trivy Scan Backend Image') {
+            steps {
+                sh '''
+                    mkdir -p trivy-report
+
+                    trivy image \
+                        --severity HIGH,CRITICAL \
+                        --format table \
+                        -o trivy-report/backend-report.txt \
+                        ${BACKEND_IMAGE}:latest
+                '''
+            }
+        }
+
+        stage('Trivy Scan Frontend Image') {
+            steps {
+                sh '''
+                    trivy image \
+                        --severity HIGH,CRITICAL \
+                        --format table \
+                        -o trivy-report/frontend-report.txt \
+                        ${FRONTEND_IMAGE}:latest
+                '''
+            }
+        }
+
+        stage('Archive Trivy Reports') {
+            steps {
+                archiveArtifacts artifacts: 'trivy-report/*.txt', fingerprint: true
+            }
+        }
     }
 
     post {
+
         success {
             echo 'Pipeline completed successfully.'
         }

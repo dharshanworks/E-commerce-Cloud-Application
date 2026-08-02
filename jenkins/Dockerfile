@@ -19,7 +19,8 @@ RUN apt-get install -y \
     wget \
     gnupg \
     lsb-release \
-    ca-certificates
+    ca-certificates \
+    apt-transport-https
 
 # --------------------------------
 # Install Docker CLI
@@ -45,6 +46,20 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" \
     unzip awscliv2.zip && \
     ./aws/install && \
     rm -rf aws awscliv2.zip
+
+# --------------------------------
+# Install Trivy
+# --------------------------------
+
+RUN wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | \
+    gpg --dearmor -o /usr/share/keyrings/trivy.gpg
+
+RUN echo \
+    "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(. /etc/os-release && echo "$VERSION_CODENAME") main" \
+    > /etc/apt/sources.list.d/trivy.list
+
+RUN apt-get update && \
+    apt-get install -y trivy
 
 # --------------------------------
 # Install Jenkins Plugins

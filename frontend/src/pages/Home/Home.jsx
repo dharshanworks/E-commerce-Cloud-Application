@@ -28,7 +28,7 @@ export const Home = () => (
       <div className="hero-content text-center">
         <div className="max-w-xl">
           <h1 className="mb-6 bg-linear-to-r from-white via-stone-200 to-white bg-clip-text text-5xl font-extrabold tracking-tight text-transparent md:text-6xl">
-            Welcome to Dharshan
+            Welcome to CloudCart
           </h1>
           <p className="mb-8 text-lg leading-relaxed text-stone-300">
             Discover amazing products at unbeatable prices. Shop with confidence.

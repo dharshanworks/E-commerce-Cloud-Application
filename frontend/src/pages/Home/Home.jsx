@@ -81,7 +81,7 @@ export const Home = () => (
           </h1>
 
           <p className="mb-8 text-lg leading-8 text-gray-300">
-            Shop from thousands of carefully selected products with secure
+            Shop thousands of carefully selected products with secure
             payments, lightning-fast delivery, and unbeatable customer support.
             Your next favorite purchase is just one click away.
           </p>

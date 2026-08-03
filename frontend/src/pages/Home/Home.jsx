@@ -77,7 +77,7 @@ export const Home = () => (
           </div>
 
           <h1 className="mb-6 bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-6xl font-black leading-tight text-transparent">
-            Discover Premium Products With Confidence
+            Discover Premium Products
           </h1>
 
           <p className="mb-8 text-lg leading-8 text-gray-300">

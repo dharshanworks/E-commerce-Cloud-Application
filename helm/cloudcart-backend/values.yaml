@@ -24,14 +24,3 @@ tolerations: []
 
 affinity: {}
 
-env:
-  PORT: "5000"
-  NODE_ENV: "production"
-  MONGO_URI: "mongodb+srv://cloudcartadmin:7339386072_dharshan774923@cloudcart-cluster.1vxmjtm.mongodb.net/?appName=cloudcart-cluster"
-  JWT_SECRET: "dharshan@774923"
-  JWT_EXPIRES_IN: "7d"
-  FRONTEND_URL: "http://k8s-frontend-cloudcar-03a00dc22a-426737769.ap-south-1.elb.amazonaws.com"
-  PEXELS_API_KEY: "lXhJXBV8TAvYsfGd24kmy6jPElwgTfcdbAazAJwlfClOPEW2Mr1zLiBR"
-  SEED_ADMIN_NAME: "Admin User"
-  SEED_ADMIN_EMAIL: "admin@example.com"
-  SEED_ADMIN_PASSWORD: "replace_with_a_secure_seed_password"

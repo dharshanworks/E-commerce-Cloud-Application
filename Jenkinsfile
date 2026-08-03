@@ -6,7 +6,6 @@ pipeline {
     }
 
     environment {
-
         AWS_REGION = "ap-south-1"
         AWS_ACCOUNT_ID = "747848915242"
 
@@ -15,6 +14,8 @@ pipeline {
 
         BACKEND_ECR = "747848915242.dkr.ecr.ap-south-1.amazonaws.com/cloudcart-backend"
         FRONTEND_ECR = "747848915242.dkr.ecr.ap-south-1.amazonaws.com/cloudcart-frontend"
+
+        IMAGE_TAG = "${BUILD_NUMBER}"
 
         SONAR_SCANNER = tool 'SonarScanner'
         DEPENDENCY_CHECK = tool 'DependencyCheck'
@@ -81,7 +82,6 @@ pipeline {
 
         stage('OWASP Dependency Check') {
             steps {
-
                 sh 'mkdir -p dependency-check-report'
 
                 dependencyCheck(
@@ -102,13 +102,13 @@ pipeline {
 
         stage('Build Backend Docker Image') {
             steps {
-                sh 'docker build -t ${BACKEND_IMAGE}:latest ./backend'
+                sh 'docker build -t ${BACKEND_IMAGE}:${IMAGE_TAG} ./backend'
             }
         }
 
         stage('Build Frontend Docker Image') {
             steps {
-                sh 'docker build -t ${FRONTEND_IMAGE}:latest ./frontend'
+                sh 'docker build -t ${FRONTEND_IMAGE}:${IMAGE_TAG} ./frontend'
             }
         }
 
@@ -121,7 +121,7 @@ pipeline {
                         --severity HIGH,CRITICAL \
                         --format table \
                         -o trivy-report/backend-report.txt \
-                        ${BACKEND_IMAGE}:latest
+                        ${BACKEND_IMAGE}:${IMAGE_TAG}
                 '''
             }
         }
@@ -133,7 +133,7 @@ pipeline {
                         --severity HIGH,CRITICAL \
                         --format table \
                         -o trivy-report/frontend-report.txt \
-                        ${FRONTEND_IMAGE}:latest
+                        ${FRONTEND_IMAGE}:${IMAGE_TAG}
                 '''
             }
         }
@@ -150,7 +150,6 @@ pipeline {
                     $class: 'AmazonWebServicesCredentialsBinding',
                     credentialsId: 'aws-ecr'
                 ]]) {
-
                     sh '''
                         export AWS_PAGER=""
 
@@ -167,8 +166,11 @@ pipeline {
         stage('Tag Backend Image') {
             steps {
                 sh '''
-                    docker tag ${BACKEND_IMAGE}:latest \
-                    ${BACKEND_ECR}:latest
+                    docker tag ${BACKEND_IMAGE}:${IMAGE_TAG} \
+                        ${BACKEND_ECR}:${IMAGE_TAG}
+
+                    docker tag ${BACKEND_IMAGE}:${IMAGE_TAG} \
+                        ${BACKEND_ECR}:latest
                 '''
             }
         }
@@ -176,28 +178,35 @@ pipeline {
         stage('Tag Frontend Image') {
             steps {
                 sh '''
-                    docker tag ${FRONTEND_IMAGE}:latest \
-                    ${FRONTEND_ECR}:latest
+                    docker tag ${FRONTEND_IMAGE}:${IMAGE_TAG} \
+                        ${FRONTEND_ECR}:${IMAGE_TAG}
+
+                    docker tag ${FRONTEND_IMAGE}:${IMAGE_TAG} \
+                        ${FRONTEND_ECR}:latest
                 '''
             }
         }
 
         stage('Push Backend Image') {
             steps {
-                sh 'docker push ${BACKEND_ECR}:latest'
+                sh '''
+                    docker push ${BACKEND_ECR}:${IMAGE_TAG}
+                    docker push ${BACKEND_ECR}:latest
+                '''
             }
         }
 
         stage('Push Frontend Image') {
             steps {
-                sh 'docker push ${FRONTEND_ECR}:latest'
+                sh '''
+                    docker push ${FRONTEND_ECR}:${IMAGE_TAG}
+                    docker push ${FRONTEND_ECR}:latest
+                '''
             }
         }
-
     }
 
     post {
-
         success {
             echo 'Pipeline completed successfully.'
         }

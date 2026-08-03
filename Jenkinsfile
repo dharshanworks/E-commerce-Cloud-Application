@@ -44,7 +44,7 @@ pipeline {
         stage('Backend Build') {
             steps {
                 dir('backend') {
-                    sh 'npm install'
+                    sh 'npm ci'
                 }
             }
         }
@@ -52,7 +52,7 @@ pipeline {
         stage('Frontend Build') {
             steps {
                 dir('frontend') {
-                    sh 'npm install'
+                    sh 'npm ci'
                     sh 'npm run build'
                 }
             }
@@ -235,17 +235,16 @@ pipeline {
                         git config user.name "Jenkins"
                         git config user.email "jenkins@cloudcart.com"
 
-                        git checkout main || git checkout -b main
-                        git pull origin main --rebase
-
+                        # Only stage Helm files
                         git add helm/cloudcart-backend/values.yaml
                         git add helm/cloudcart-frontend/values.yaml
 
                         if ! git diff --cached --quiet; then
                             git commit -m "Update image tag to ${IMAGE_TAG}"
-                            git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/dharshanworks/E-commerce-Cloud-Application.git main
+
+                            git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/dharshanworks/E-commerce-Cloud-Application.git HEAD:main
                         else
-                            echo "No Helm changes to commit."
+                            echo "No Helm changes detected."
                         fi
                     '''
                 }

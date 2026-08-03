@@ -47,7 +47,7 @@ export const Home = () => (
 
     <section
       className="hero hero-bg relative overflow-hidden rounded-3xl border border-base-300
-      bg-gradient-to-r from-slate-900 via-neutral-900 to-slate-900
+      bg-linear-to-r from-slate-900 via-neutral-900 to-slate-900
       py-28 text-white shadow-2xl"
     >
       {/* Background Blur Effects */}
@@ -64,7 +64,7 @@ export const Home = () => (
             <img
               src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=700"
               alt="Shopping"
-              className="w-[420px] rounded-2xl object-cover transition duration-500 hover:scale-105"
+              className="`w-105` rounded-2xl object-cover transition duration-500 hover:scale-105"
             />
           </div>
         </div>
@@ -76,7 +76,7 @@ export const Home = () => (
             ✨ Trusted by Thousands of Customers
           </div>
 
-          <h1 className="mb-6 bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-6xl font-black leading-tight text-transparent">
+          <h1 className="mb-6 bg-linear-to-r from-white via-gray-200 to-white bg-clip-text text-6xl font-black leading-tight text-transparent">
             Discover Premium Products
           </h1>
 
@@ -210,7 +210,7 @@ export const Home = () => (
 
     <section
       className="fade-up rounded-3xl border border-primary/20
-      bg-gradient-to-r from-primary/10 via-base-200 to-primary/10
+      bg-linear-to-r from-primary/10 via-base-200 to-primary/10
       p-14 text-center shadow-xl"
     >
       <h2 className="mb-5 text-5xl font-extrabold">

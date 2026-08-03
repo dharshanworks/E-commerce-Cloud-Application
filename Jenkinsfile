@@ -154,10 +154,10 @@ pipeline {
                         export AWS_PAGER=""
 
                         aws ecr get-login-password \
-                        --region ${AWS_REGION} | docker login \
-                        --username AWS \
-                        --password-stdin \
-                        ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+                            --region ${AWS_REGION} | docker login \
+                            --username AWS \
+                            --password-stdin \
+                            ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
                     '''
                 }
             }
@@ -204,6 +204,54 @@ pipeline {
                 '''
             }
         }
+
+        stage('Update Helm Image Tags') {
+            steps {
+                sh """
+                    sed -i 's/tag: .*/tag: ${IMAGE_TAG}/' helm/cloudcart-backend/values.yaml
+                    sed -i 's/tag: .*/tag: ${IMAGE_TAG}/' helm/cloudcart-frontend/values.yaml
+                """
+
+                sh '''
+                    echo "Backend values.yaml"
+                    cat helm/cloudcart-backend/values.yaml
+
+                    echo "Frontend values.yaml"
+                    cat helm/cloudcart-frontend/values.yaml
+                '''
+            }
+        }
+
+        stage('Commit & Push Helm Changes') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'github-creds',
+                        usernameVariable: 'GIT_USERNAME',
+                        passwordVariable: 'GIT_TOKEN'
+                    )
+                ]) {
+                    sh '''
+                        git config user.name "Jenkins"
+                        git config user.email "jenkins@cloudcart.com"
+
+                        git checkout main || git checkout -b main
+                        git pull origin main --rebase
+
+                        git add helm/cloudcart-backend/values.yaml
+                        git add helm/cloudcart-frontend/values.yaml
+
+                        if ! git diff --cached --quiet; then
+                            git commit -m "Update image tag to ${IMAGE_TAG}"
+                            git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/dharshanworks/E-commerce-Cloud-Application.git main
+                        else
+                            echo "No Helm changes to commit."
+                        fi
+                    '''
+                }
+            }
+        }
+
     }
 
     post {

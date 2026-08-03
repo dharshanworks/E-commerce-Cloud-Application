@@ -24,3 +24,10 @@ tolerations: []
 
 affinity: {}
 
+rollout:
+  activeService: cloudcart-backend-active
+
+  previewService: cloudcart-backend-preview
+
+  autoPromotionEnabled: true
+

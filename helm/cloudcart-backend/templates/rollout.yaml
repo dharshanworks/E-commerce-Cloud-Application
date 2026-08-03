@@ -1,11 +1,13 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ .Values.app.name }}
 
 spec:
   replicas: {{ .Values.replicaCount }}
+
+  revisionHistoryLimit: 3
 
   selector:
     matchLabels:
@@ -21,7 +23,6 @@ spec:
         - name: backend
 
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-
           imagePullPolicy: {{ .Values.image.pullPolicy }}
 
           ports:
@@ -31,16 +32,30 @@ spec:
             - secretRef:
                 name: {{ .Values.secret.name }}
 
-          livenessProbe:
-            httpGet:
-              path: /api/health
-              port: {{ .Values.service.targetPort }}
-            initialDelaySeconds: 30
-            periodSeconds: 15
-
           readinessProbe:
             httpGet:
               path: /api/health
               port: {{ .Values.service.targetPort }}
             initialDelaySeconds: 20
             periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: {{ .Values.service.targetPort }}
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+
+          resources:
+{{- toYaml .Values.resources | nindent 12 }}
+
+  strategy:
+    blueGreen:
+      activeService: {{ .Values.rollout.activeService }}
+      previewService: {{ .Values.rollout.previewService }}
+      autoPromotionEnabled: {{ .Values.rollout.autoPromotionEnabled }}
+      scaleDownDelaySeconds: 30

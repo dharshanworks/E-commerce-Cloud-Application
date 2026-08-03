@@ -33,9 +33,39 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 /**
+ * ============================================================================
  * PROMETHEUS METRICS
+ * ============================================================================
  */
+
 client.collectDefaultMetrics();
+
+/**
+ * Total HTTP Requests
+ */
+const httpRequestCounter = new client.Counter({
+  name: "http_requests_total",
+  help: "Total number of HTTP requests",
+  labelNames: ["method", "route", "status"],
+});
+
+/**
+ * HTTP Request Duration
+ */
+const httpRequestDuration = new client.Histogram({
+  name: "http_request_duration_seconds",
+  help: "Duration of HTTP requests in seconds",
+  labelNames: ["method", "route", "status"],
+  buckets: [0.1, 0.3, 0.5, 1, 2, 5],
+});
+
+/**
+ * Active Requests
+ */
+const activeHttpRequests = new client.Gauge({
+  name: "http_active_requests",
+  help: "Current number of active HTTP requests",
+});
 
 /**
  * SECTION 1: TRUST PROXY
@@ -190,6 +220,44 @@ const authRateLimiter = rateLimit({
  * SECTION 8: API ROUTES
  * Mount route handlers here
  */
+
+/**
+ * ============================================================================
+ * HTTP Metrics Middleware
+ * ============================================================================
+ */
+
+app.use((req, res, next) => {
+
+  activeHttpRequests.inc();
+
+  const end = httpRequestDuration.startTimer();
+
+  res.on("finish", () => {
+
+    const route =
+      req.baseUrl && req.baseUrl !== ""
+        ? req.baseUrl + (req.route?.path || "")
+        : req.route?.path || req.path;
+
+    const labels = {
+      method: req.method,
+      route,
+      status: String(res.statusCode),
+    };
+
+    httpRequestCounter.inc(labels);
+
+    end(labels);
+
+    activeHttpRequests.dec();
+
+  });
+
+  next();
+
+});
+
 app.use('/api/auth', authRateLimiter, authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);

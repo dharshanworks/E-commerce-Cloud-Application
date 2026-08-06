@@ -1,344 +1,169 @@
-# 🚀 CloudCart - Production-Grade MERN DevOps Platform on AWS EKS
+# 🛒 CloudCart – Cloud-Native MERN E-Commerce Platform
 
-> A production-inspired cloud-native three-tier MERN application deployed on Amazon EKS using modern DevOps practices including CI/CD, GitOps, Kubernetes, Monitoring, and Centralized Logging.
-
----
-
-## 📌 Project Overview
-
-CloudCart is a full-stack e-commerce application designed to demonstrate an end-to-end DevOps workflow on AWS.
-
-The project showcases how modern DevOps teams build, secure, deploy, monitor, and operate containerized applications using Kubernetes and industry-standard tools.
+CloudCart is a production-inspired cloud-native MERN e-commerce platform that demonstrates a complete DevOps lifecycle on AWS. The project automates infrastructure provisioning, application delivery, security scanning, monitoring, centralized logging, and GitOps-based deployments using modern DevOps practices.
 
 ---
 
-# 🏗 Architecture
+## 🚀 Features
 
-<p align="center">
-  <img src="docs/architecture/cloudcart-architecture.png" alt="CloudCart Architecture" width="100%">
-</p>
+- MERN-based e-commerce application
+- Containerized using Docker
+- Deployed on Amazon EKS
+- Infrastructure provisioned with Terraform
+- CI/CD pipeline using Jenkins
+- GitOps deployment using ArgoCD
+- Docker image management with Amazon ECR
+- Static code analysis using SonarQube
+- Dependency vulnerability scanning using OWASP Dependency Check
+- Container image security scanning using Trivy
+- Monitoring with Prometheus & Grafana
+- Centralized logging using Filebeat, Elasticsearch & Kibana (ELK)
+- AWS Application Load Balancer for external access
 
 ---
 
-# 🚀 DevOps Workflow
+## 🏗 Architecture
 
-```text
-Developer
-    │
-    ▼
-GitHub Repository
-    │
-    ▼
-Jenkins CI/CD Pipeline
-    │
-    ├───────────────► SonarQube
-    │
-    ├───────────────► Trivy Scan
-    │
-    └───────────────► OWASP Dependency Check
-    │
-    ▼
-Docker Build
-    │
-    ▼
-Amazon ECR
-    │
-    ▼
-ArgoCD (GitOps)
-    │
-    ▼
-Amazon EKS
-    │
-    ├── Frontend
-    ├── Backend
-    └── MongoDB Atlas
-    │
-    ▼
-AWS Application Load Balancer
-    │
-    ▼
-Users
+GitHub
+→ Jenkins CI/CD
+→ SonarQube
+→ OWASP Dependency Check
+→ Trivy
+→ Docker Build
+→ Amazon ECR
+→ GitOps Repository
+→ ArgoCD
+→ Amazon EKS
+→ AWS Application Load Balancer
+→ End Users
 
-Monitoring
+Monitoring:
 Prometheus → Grafana
 
-Logging
+Logging:
 Filebeat → Elasticsearch → Kibana
-```
 
 ---
 
-# ✨ Features
-
-- Three-Tier MERN Architecture
-- Containerized using Docker
-- Kubernetes Deployment
-- GitOps with ArgoCD
-- Automated CI/CD Pipeline
-- Code Quality Analysis
-- Container Vulnerability Scanning
-- Dependency Security Scanning
-- AWS Load Balancer
-- Persistent Storage using EBS CSI Driver
-- Application Monitoring
-- Centralized Logging
-- Production-inspired Kubernetes Deployment
-
----
-
-# 🛠 Technology Stack
-
-## Frontend
-
-- React
-- Tailwind CSS
-- Axios
-
-## Backend
-
-- Node.js
-- Express.js
-- JWT Authentication
-- Swagger API
-
-## Database
-
-- MongoDB Atlas
-
----
-
-# ☁ AWS Services
-
-- Amazon EKS
-- Amazon ECR
-- EC2
-- IAM
-- VPC
-- Route 53
-- Application Load Balancer
-- EBS CSI Driver
-- IRSA (IAM Roles for Service Accounts)
-
----
-
-# ⚙ DevOps Stack
-
-## CI/CD
-
-- Jenkins
-
-## GitOps
-
-- ArgoCD
-
-## Containerization
-
-- Docker
-
-## Container Registry
-
-- Amazon ECR
-
-## Code Quality
-
-- SonarQube
-
-## Security
-
-- Trivy
-- OWASP Dependency Check
-
-## Monitoring
-
-- Prometheus
-- Grafana
-
-## Logging
-
-- Elasticsearch
-- Filebeat
-- Kibana
-
----
-
-# 📂 Repository Structure
+## 📁 Repository Structure
 
 ```
-CloudCart
-│
+CloudCart/
 ├── frontend/
 ├── backend/
-├── kubernetes/
-├── helm/
-├── argocd/
-├── monitoring/
-├── logging/
-├── docker/
+├── Dockerfile
+├── Jenkinsfile
+├── k8s/
 ├── terraform/
-├── ansible/
-├── docs/
-├── screenshots/
 └── README.md
 ```
 
 ---
 
-# 🚀 CI/CD Pipeline
+## ⚙ Tech Stack
 
-The Jenkins pipeline performs the following stages:
+### Frontend
+- React.js
 
-1. Checkout Source Code
-2. Install Dependencies
-3. Run Unit Tests
-4. SonarQube Analysis
-5. OWASP Dependency Check
-6. Trivy Security Scan
-7. Build Docker Images
-8. Push Images to Amazon ECR
-9. Update Kubernetes Manifests
-10. Git Push
-11. ArgoCD Automatic Deployment
+### Backend
+- Node.js
+- Express.js
+
+### Database
+- MongoDB Atlas
+
+### DevOps
+- Docker
+- Kubernetes
+- Jenkins
+- ArgoCD
+- Terraform
+
+### AWS
+- Amazon EKS
+- Amazon ECR
+- Application Load Balancer
+- IAM
+- VPC
+
+### Monitoring
+- Prometheus
+- Grafana
+
+### Logging
+- Filebeat
+- Elasticsearch
+- Kibana
+
+### DevSecOps
+- SonarQube
+- OWASP Dependency Check
+- Trivy
 
 ---
 
-# ☸ Kubernetes Components
+## 🔄 CI/CD Workflow
 
-- Deployments
-- Services
-- Ingress
-- ConfigMaps
-- Secrets
-- Persistent Volumes
-- Persistent Volume Claims
-- Service Accounts
+1. Developer pushes code to GitHub
+2. GitHub Webhook triggers Jenkins
+3. Jenkins performs:
+   - Checkout
+   - Build
+   - SonarQube Analysis
+   - OWASP Dependency Check
+   - Trivy Scan
+   - Docker Build
+   - Push Image to Amazon ECR
+4. Jenkins updates the GitOps Repository
+5. ArgoCD detects changes
+6. Application is automatically deployed to Amazon EKS
 
 ---
 
-# 📊 Monitoring Stack
+## 📊 Monitoring
 
-Prometheus collects metrics from:
-
-- Kubernetes Cluster
-- Backend Application
-- Node Exporter
-- kube-state-metrics
+Prometheus continuously collects application and Kubernetes metrics.
 
 Grafana visualizes:
 
 - CPU Usage
 - Memory Usage
-- Pod Status
-- Node Health
-- Application Metrics
+- Request Rate
+- Response Time
+- Kubernetes Health
 
 ---
 
-# 📜 Logging Stack
+## 📜 Centralized Logging
 
-Filebeat collects logs from Kubernetes Pods.
-
-Logs are shipped to Elasticsearch and visualized using Kibana.
-
-Collected Logs
-
-- Backend Logs
-- Frontend Logs
-- Kubernetes Logs
-- Container Logs
+Application logs are collected by Filebeat, indexed by Elasticsearch, and visualized in Kibana for troubleshooting and log analysis.
 
 ---
 
-# 🔐 Security
+## 🔒 Security
 
-- Helmet
-- JWT Authentication
 - SonarQube
-- Trivy
 - OWASP Dependency Check
+- Trivy
 - IAM Roles
 - Kubernetes Secrets
 
 ---
 
-# 📸 Screenshots
+## 📸 Screenshots
 
-## Architecture
+Add screenshots of:
 
-```
-docs/screenshots/architecture.png
-```
-
-## Jenkins Pipeline
-
-```
-docs/screenshots/jenkins.png
-```
-
-## ArgoCD
-
-```
-docs/screenshots/argocd.png
-```
-
-## Grafana Dashboard
-
-```
-docs/screenshots/grafana.png
-```
-
-## Kibana Discover
-
-```
-docs/screenshots/kibana.png
-```
+- Jenkins Pipeline
+- ArgoCD Dashboard
+- Prometheus Targets
+- Grafana Dashboard
+- Kibana Discover
+- AWS ALB
+- Amazon EKS
 
 ---
 
-# 🎯 Learning Outcomes
+## 👨‍💻 Author
 
-This project provided practical experience with:
-
-- Cloud-native application deployment
-- Kubernetes orchestration
-- GitOps workflow
-- CI/CD automation
-- DevSecOps practices
-- Infrastructure troubleshooting
-- Kubernetes networking
-- Persistent storage
-- Monitoring and observability
-- Centralized logging
-- Production deployment strategies
-
----
-
-# 🚧 Future Enhancements
-
-- Blue-Green Deployment
-- Canary Deployment
-- Horizontal Pod Autoscaler (HPA)
-- Cluster Autoscaler
-- Infrastructure as Code using Terraform
-- OpenTelemetry Integration
-- Distributed Tracing
-- Alertmanager Slack Notifications
-- Backup & Disaster Recovery
-- Advanced Grafana Dashboards
-
----
-
-# 👨‍💻 Author
-
-**Dharshan R**
-
-AWS | DevOps | Cloud | Kubernetes
-
-LinkedIn:
-https://www.linkedin.com/in/iamdharshanr/
-
-GitHub:
-https://github.com/dharshanworks
-
----
-
-# ⭐ If you found this project useful, consider giving it a Star!
+Dharshan R
